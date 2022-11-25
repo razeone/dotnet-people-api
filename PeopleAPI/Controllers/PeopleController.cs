@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using PeopleAPI.Models;
 
 namespace PeopleAPI.Controllers
@@ -13,17 +14,22 @@ namespace PeopleAPI.Controllers
     [ApiController]
     public class PeopleController : ControllerBase
     {
+        private IConfiguration _configuration;
+        
         private readonly PersonContext _context;
 
-        public PeopleController(PersonContext context)
+        public PeopleController(PersonContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: api/People
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetPersons()
         {
+            var mySecret = _configuration["my-secret"];
+            Console.WriteLine(mySecret);
             return await _context.Persons.ToListAsync();
         }
 
